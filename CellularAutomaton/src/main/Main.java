@@ -1,6 +1,8 @@
 package main;
 
 import javax.swing.*;
+
+import logic.Grid;
 import utils.*;
 
 /**
@@ -9,8 +11,8 @@ import utils.*;
 public class Main {
 
     public static void main(String[] args) {
-
-        Runner runner = new Runner();
+        Grid grid = new Grid(Constants.GRID_SIZE);
+        Runner runner = new Runner(grid);
         runner.run();
 
     }

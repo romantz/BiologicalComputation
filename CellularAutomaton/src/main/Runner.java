@@ -1,5 +1,6 @@
 package main;
 
+import logic.Grid;
 import utils.Constants;
 
 import javax.swing.*;
@@ -9,9 +10,11 @@ import javax.swing.*;
  */
 public class Runner {
     Canvas canvas;
+    Grid grid;
 
-    public Runner(){
-        canvas = init();
+    public Runner(Grid grid){
+        canvas = init(grid);
+        this.grid = grid;
     }
 
     public void run(){
@@ -26,16 +29,16 @@ public class Runner {
         }
     }
 
-    public Canvas init(){
+    public Canvas init(Grid grid){
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         window.setBounds(Constants.WINDOW_X_LOCATION,
                 Constants.WINDOW_Y_LOCATION,
-                Constants.WINDOW_WIDTH,
-                Constants.WINDOW_HEIGHT);
+                Constants.WINDOW_SIZE,
+                Constants.WINDOW_SIZE + 22);
 
-        Canvas canvas = new Canvas();
+        Canvas canvas = new Canvas(grid);
         window.getContentPane().add(canvas);
         window.setVisible(true);
 
