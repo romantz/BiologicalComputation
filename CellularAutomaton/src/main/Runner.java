@@ -1,6 +1,7 @@
 package main;
 
 import logic.Grid;
+import logic.Person;
 import utils.Constants;
 
 import javax.swing.*;
@@ -21,10 +22,31 @@ public class Runner {
         while(true) {
             try {
                 Thread.sleep(Constants.SLEEP_MILIS);
-                canvas.setPosx(canvas.getPosx() + 1);
                 canvas.repaint();
+                recalculateLocations();
+
             } catch (Exception e){
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public void recalculateLocations() {
+        for (Person p: grid.getPeople()) {
+            switch (p.getSex()){
+                case MALE:
+                    grid.getCell(p.getX(), p.getY()).setMaleOccupier(null);
+                    grid.getCell(p.getNewCoord().getX(), p.getNewCoord().getY()).setMaleOccupier(p);
+                    break;
+                case FEMALE:
+                    grid.getCell(p.getX(), p.getY()).setFemaleOccupier(null);
+                    grid.getCell(p.getNewCoord().getX(), p.getNewCoord().getY()).setFemaleOccupier(p);
+                    break;
+            }
+
+            p.applyMove();
+            if(p.getX() < Constants.GRID_SIZE - 1){
+                p.move(1,0);
             }
         }
     }

@@ -24,9 +24,31 @@ public class Grid{
                 cells[i][j] = new Cell();
             }
         }
-        Person p = new Person(Sex.FEMALE, (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1)));
+
+        for (int i = 0; i < Constants.NUMBER_OF_PEOPLE_OF_EACH_GENDER; i++) {
+            generatePerson(Sex.FEMALE);
+            generatePerson(Sex.MALE);
+        }
+    }
+
+    public void generatePerson(Sex sex){
+
+        int x = randomCoord();
+        int y = randomCoord();
+        int number = (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1));
+
+        while (!cells[y][x].isEmpty()){
+            x = randomCoord();
+            y = randomCoord();
+        }
+
+        Person p = new Person(sex, number, x, y);
         people.add(p);
-        cells[6][7].setOccupier(p);
+        cells[y][x].setOccupier(p);
+    }
+
+    private int randomCoord(){
+        return (int)(Math.random() * (Constants.GRID_SIZE));
     }
 
     public int getSize() {
@@ -35,6 +57,13 @@ public class Grid{
 
     public LinkedList<Person> getPeople(){
         return people;
+    }
+
+    public Cell getCell(int x, int y){
+        if(x >= 0 && x < Constants.GRID_SIZE && y >= 0 && y < Constants.GRID_SIZE){
+            return cells[y][x];
+        }
+        return null;
     }
 
 }

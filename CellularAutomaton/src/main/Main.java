@@ -14,7 +14,6 @@ public class Main {
         Grid grid = new Grid(Constants.GRID_SIZE);
         Runner runner = new Runner(grid);
         runner.run();
-
     }
 }
 
