@@ -18,6 +18,7 @@ public class Person {
     private boolean foundPartner;
     private Cell currentCell;
     private Cell nextCell;
+    private int lastXDir = 0, lastYDir = 0;
 
     public Person(Sex sex, int number, Cell cell){
         this.sex = sex;
@@ -70,6 +71,14 @@ public class Person {
 
     }
 
+    public int getLastXDir(){
+        return lastXDir;
+    }
+
+    public int getLastYDir(){
+        return lastYDir;
+    }
+
     public void setCurrentCell(Cell cell) {
         this.currentCell = cell;
     }
@@ -80,7 +89,10 @@ public class Person {
 
     public void move(){
         if(nextCell != null) {
-            System.out.println(sex + " at " + currentCell + " moving to " + nextCell);
+
+            lastXDir = nextCell.getX() - currentCell.getX();
+            lastYDir = nextCell.getY() - currentCell.getY();
+
             switch (sex) {
                 case MALE:
                     currentCell.setNextMaleOccupier(null);
@@ -101,25 +113,21 @@ public class Person {
     }
 
     public boolean isSingle(){
-        return getOppositeSexOccupier() == null;
+        return getPartner() == null;
     }
 
-    private Person getOppositeSexOccupier(){
+    public Person getPartner(){
         if (sex == Sex.MALE)
             return currentCell.getCurrentFemaleOccupier();
         return currentCell.getCurrentMaleOccupier();
     }
 
     public int getMatchValue(){
-        return Constants.RANDOM_NUMBER_MAX - Math.abs(getNumber() - getOppositeSexOccupier().getNumber());
+        return Constants.RANDOM_NUMBER_MAX - Math.abs(getNumber() - getPartner().getNumber());
     }
 
     public int getMatchValue(Person other){
         return Constants.RANDOM_NUMBER_MAX - Math.abs(getNumber() - other.getNumber());
-    }
-
-    public void applyMove(){
-    //    setCurrentCell(getNextCell());
     }
 
     public LinkedList<Cell> getNeighborCells(){

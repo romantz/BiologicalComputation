@@ -70,32 +70,48 @@ public class Runner {
                 }
 
                 if (p.getNextCell() == null) {
+                    decideNextCell(p, neighbors);
+                }
+            } else if (!p.isSingle()) {
+                if(p.getNextCell() == null && p.getPartner().getNextCell() == null) {
                     Cell nextCellByLastDir = grid.getCell(p.getX() + p.getLastXDir(), p.getY() + p.getLastYDir());
-                    if(Math.random() < Constants.CHANCE_TO_KEEP_GOING_IN_THE_SAME_DIRECTION && (p.getLastXDir() != 0 || p.getLastYDir() != 0) && nextCellByLastDir != null && nextCellByLastDir.isEmpty()){
-                        if((p.getSex() == Sex.MALE && nextCellByLastDir.getNextMaleOccupier() == null) ||
-                            (p.getSex() == Sex.FEMALE && nextCellByLastDir.getNextFemaleOccupier() == null))
-                            p.setNextCell(nextCellByLastDir);
-                    }
-                    else {
-                        Collections.shuffle(neighbors);
-                        for (Cell n : neighbors) {
-                            if (p.getSex() == Sex.MALE) {
-                                if (n.getNextMaleOccupier() == null)
-                                    if (n.getCurrentMaleOccupier() == null || n.getCurrentMaleOccupier().getNextCell() != null)
-                                        p.setNextCell(n);
-                                break;
-                            } else if (n.getNextFemaleOccupier() == null)
-                                if (n.getCurrentFemaleOccupier() == null || n.getCurrentFemaleOccupier().getNextCell() != null)
-                                    p.setNextCell(n);
-                            break;
-                        }
-                    }
-                    if (p.getNextCell() == null) {
-                        p.setNextCell(p.getCurrentCell());
-                    }
                 }
             }
         });
+    }
+
+    private Cell decideNextCell(Person p, LinkedList<Cell> neighbors){
+        Cell nextCellByLastDir = grid.getCell(p.getX() + p.getLastXDir(), p.getY() + p.getLastYDir());
+        if(Math.random() < Constants.CHANCE_TO_KEEP_GOING_IN_THE_SAME_DIRECTION && (p.getLastXDir() != 0 || p.getLastYDir() != 0) && nextCellByLastDir != null && nextCellByLastDir.isEmpty()){
+            if((p.getSex() == Sex.MALE && nextCellByLastDir.getNextMaleOccupier() == null) ||
+                    (p.getSex() == Sex.FEMALE && nextCellByLastDir.getNextFemaleOccupier() == null)) {
+                p.setNextCell(nextCellByLastDir);
+                return nextCellByLastDir;
+            }
+        }
+        else {
+            Collections.shuffle(neighbors);
+            for (Cell n : neighbors) {
+                if (p.getSex() == Sex.MALE) {
+                    if (n.getNextMaleOccupier() == null)
+                        if (n.getCurrentMaleOccupier() == null || n.getCurrentMaleOccupier().getNextCell() != null) {
+                            p.setNextCell(n);
+                            return n;
+                        }
+                    break;
+                } else if (n.getNextFemaleOccupier() == null)
+                    if (n.getCurrentFemaleOccupier() == null || n.getCurrentFemaleOccupier().getNextCell() != null) {
+                        p.setNextCell(n);
+                        return n;
+                    }
+                break;
+            }
+        }
+        if (p.getNextCell() == null) {
+            p.setNextCell(p.getCurrentCell());
+        }
+
+        return p.getCurrentCell();
     }
 
     public Canvas init(Grid grid){
