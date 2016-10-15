@@ -14,16 +14,17 @@ public class Person {
     private Sex sex;
     private Color color;
     private boolean foundPartner;
-    private Coord coord;
-    private Coord newCoord;
+    private Cell currentCell;
+    private Cell nextCell;
 
-    public Person(Sex sex, int number, int x, int y){
+    public Person(Sex sex, int number, Cell cell){
         this.sex = sex;
         this.number = number;
-        coord = new Coord(x, y);
-        newCoord = new Coord(x, y);
+        currentCell = cell;
+        nextCell = null;
         color = Utils.calculateColorByNumber(number);
         foundPartner = false;
+        currentCell.setOccupier(this);
     }
 
     public Sex getSex(){
@@ -31,11 +32,11 @@ public class Person {
     }
 
     public int getX(){
-        return coord.getX();
+        return currentCell.getX();
     }
 
     public int getY(){
-        return coord.getY();
+        return currentCell.getY();
     }
 
     public int getNumber() {
@@ -50,32 +51,24 @@ public class Person {
         return color;
     }
 
-    public boolean getFoundPartner() {
-        return foundPartner;
+    public void setNextLocation(Cell cell){
+        nextCell = cell;
     }
 
-    public void setFoundPartner(boolean foundPartner){
-        this.foundPartner = foundPartner;
+    public Cell getNextLocation(){
+        return nextCell;
     }
 
-    public void setNewCoord(Coord coord){
-        newCoord = coord;
-    }
-
-    public Coord getNewCoord(){
-        return newCoord;
-    }
-
-    public void setCoord(Coord coord) {
-        this.coord = new Coord(coord.getX(), coord.getY());
+    public void setCurrentLocation(Cell cell) {
+        this.currentCell = cell;
     }
 
     public void move(int deltaX, int deltaY){
-        setNewCoord(new Coord(getX() + deltaX, getY() + deltaY));
+    //    setNextLocation(new Coord(getX() + deltaX, getY() + deltaY));
     }
 
     public void applyMove(){
-        setCoord(getNewCoord());
+    //    setCurrentLocation(getNextLocation());
     }
 
 }

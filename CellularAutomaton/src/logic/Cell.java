@@ -6,10 +6,21 @@ package logic;
 public class Cell {
     Person maleOccupier;
     Person femaleOccupier;
+    private int x, y;
 
-    public Cell(){
+    public Cell(int x, int y){
         maleOccupier = null;
         femaleOccupier = null;
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY(){
+        return y;
     }
 
     public Person getMaleOccupier(){

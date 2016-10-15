@@ -21,7 +21,7 @@ public class Grid{
 
         for (int i = 0; i < size ; i++){
             for (int j = 0; j < size; j++){
-                cells[i][j] = new Cell();
+                cells[i][j] = new Cell(j, i);
             }
         }
 
@@ -42,9 +42,9 @@ public class Grid{
             y = randomCoord();
         }
 
-        Person p = new Person(sex, number, x, y);
+        Person p = new Person(sex, number, cells[y][x]);
         people.add(p);
-        cells[y][x].setOccupier(p);
+//        cells[y][x].setOccupier(p);
     }
 
     private int randomCoord(){

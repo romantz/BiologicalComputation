@@ -32,15 +32,15 @@ public class Runner {
     }
 
     public void recalculateLocations() {
-        for (Person p: grid.getPeople()) {
+        /*for (Person p: grid.getPeople()) {
             switch (p.getSex()){
                 case MALE:
                     grid.getCell(p.getX(), p.getY()).setMaleOccupier(null);
-                    grid.getCell(p.getNewCoord().getX(), p.getNewCoord().getY()).setMaleOccupier(p);
+                    grid.getCell(p.getNextLocation().getX(), p.getNextLocation().getY()).setMaleOccupier(p);
                     break;
                 case FEMALE:
                     grid.getCell(p.getX(), p.getY()).setFemaleOccupier(null);
-                    grid.getCell(p.getNewCoord().getX(), p.getNewCoord().getY()).setFemaleOccupier(p);
+                    grid.getCell(p.getNextLocation().getX(), p.getNextLocation().getY()).setFemaleOccupier(p);
                     break;
             }
 
@@ -48,7 +48,7 @@ public class Runner {
             if(p.getX() < Constants.GRID_SIZE - 1){
                 p.move(1,0);
             }
-        }
+        }*/
     }
 
     public Canvas init(Grid grid){
