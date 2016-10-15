@@ -19,6 +19,7 @@ public class Person {
     private Cell currentCell;
     private Cell nextCell;
     private int lastXDir = 0, lastYDir = 0;
+    private boolean swapping = false;
 
     public Person(Sex sex, int number, Cell cell){
         this.sex = sex;
@@ -28,6 +29,10 @@ public class Person {
         color = Utils.calculateColorByNumber(number);
         foundPartner = false;
         currentCell.setOccupier(this);
+    }
+
+    public void setSwapping(){
+        swapping = true;
     }
 
     public Sex getSex(){
@@ -90,24 +95,41 @@ public class Person {
     public void move(){
         if(nextCell != null) {
 
-            System.out.println("A " + sex + " at " + currentCell + " moved moved to " + nextCell);
-
             lastXDir = nextCell.getX() - currentCell.getX();
             lastYDir = nextCell.getY() - currentCell.getY();
 
-            switch (sex) {
-                case MALE:
-                    currentCell.setNextMaleOccupier(null);
-                    nextCell.setNextMaleOccupier(null);
-                    currentCell.setCurrentMaleOccupier(null);
-                    nextCell.setCurrentMaleOccupier(this);
-                    break;
-                case FEMALE:
-                    currentCell.setNextFemaleOccupier(null);
-                    nextCell.setNextFemaleOccupier(null);
-                    currentCell.setCurrentFemaleOccupier(null);
-                    nextCell.setCurrentFemaleOccupier(this);
-                    break;
+            if(!swapping) {
+                if(Constants.LOG_PRINTS)
+                    System.out.println("A " + sex + " at " + currentCell + " moved to " + nextCell);
+                switch (sex) {
+                    case MALE:
+                        currentCell.setNextMaleOccupier(null);
+                        nextCell.setNextMaleOccupier(null);
+                        currentCell.setCurrentMaleOccupier(null);
+                        nextCell.setCurrentMaleOccupier(this);
+                        break;
+                    case FEMALE:
+                        currentCell.setNextFemaleOccupier(null);
+                        nextCell.setNextFemaleOccupier(null);
+                        currentCell.setCurrentFemaleOccupier(null);
+                        nextCell.setCurrentFemaleOccupier(this);
+                        break;
+                }
+            }
+            else {
+                if(Constants.LOG_PRINTS)
+                    System.out.println("A swap occured");
+                switch (sex) {
+                    case MALE:
+                        nextCell.setNextMaleOccupier(null);
+                        nextCell.setCurrentMaleOccupier(this);
+                        break;
+                    case FEMALE:
+                        nextCell.setNextFemaleOccupier(null);
+                        nextCell.setCurrentFemaleOccupier(this);
+                        break;
+                }
+                swapping = false;
             }
             currentCell = nextCell;
             nextCell = null;
@@ -125,7 +147,10 @@ public class Person {
     }
 
     public int getMatchValue(){
-        return Constants.RANDOM_NUMBER_MAX - Math.abs(getNumber() - getPartner().getNumber());
+        Person partner = getPartner();
+        if(partner == null)
+            return 0;
+        return Constants.RANDOM_NUMBER_MAX - Math.abs(getNumber() - partner.getNumber());
     }
 
     public int getMatchValue(Person other){

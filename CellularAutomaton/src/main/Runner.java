@@ -17,6 +17,7 @@ import java.util.LinkedList;
 public class Runner {
     Canvas canvas;
     Grid grid;
+    long iterations = 0;
 
     public Runner(Grid grid){
         canvas = init(grid);
@@ -24,11 +25,13 @@ public class Runner {
     }
 
     public void run(){
+
         while(true) {
             try {
                 Thread.sleep(Constants.SLEEP_MILIS);
                 canvas.repaint();
                 recalculateLocations();
+                iterations++;
 
             } catch (Exception e){
                 e.printStackTrace();
@@ -37,9 +40,19 @@ public class Runner {
     }
 
     public void recalculateLocations() {
-        grid.getPeople().forEach(p -> p.move());
 
-        System.out.println("Move ended");
+        for(Person p: grid.getPeople()){
+            p.move();
+        }
+
+        int totalHappiness = 0;
+        for(Person p: grid.getPeople()) {
+            totalHappiness += p.getMatchValue();
+        }
+
+        if(iterations % 10 == 0)
+            System.out.println("Total happiness value is " + totalHappiness /
+                    (double)(Constants.RANDOM_NUMBER_MAX * Constants.NUMBER_OF_PEOPLE_OF_EACH_GENDER * 2));
 
         grid.getPeople().forEach(p -> {
             if(p.isSingle() && p.getNextCell() == null) {
@@ -74,12 +87,37 @@ public class Runner {
                 if (p.getNextCell() == null) {
                     decideNextCell(p, neighbors, false);
                 }
-            } else if (!p.isSingle() && Constants.CAN_MOVE_TOGETHER_WITH_PARTNER) {
-                if(p.getNextCell() == null && p.getPartner().getNextCell() == null &&
-                        Math.random() < Constants.CHANCE_MOVE_AS_A_PAIR) {
+            } else if (!p.isSingle()) {
+                if(p.getNextCell() == null && p.getPartner().getNextCell() == null) {
                     LinkedList<Cell> neighbors = p.getNeighborCells();
-                    Cell nextCell = decideNextCell(p, neighbors, true);
-                    p.getPartner().setNextCell(nextCell);
+                    boolean swapped = false;
+                    if(Constants.CAN_SWAP_PARTNERS){
+                        for(Cell n: neighbors) {
+                            Person otherFemale = n.getCurrentFemaleOccupier();
+                            Person otherMale = n.getCurrentMaleOccupier();
+
+                            if(n.containsPair() && otherFemale.getNextCell() == null &&
+                                    otherMale.getNextCell() == null){
+                                Person currentFemale = p.getCurrentCell().getCurrentFemaleOccupier();
+                                Person currentMale = p.getCurrentCell().getCurrentMaleOccupier();
+
+                                if(currentFemale.getMatchValue() + otherFemale.getMatchValue() <
+                                        currentFemale.getMatchValue(otherMale) + currentMale.getMatchValue(otherFemale)){
+                                    currentFemale.setNextCell(otherFemale.getCurrentCell());
+                                    currentMale.setNextCell(currentMale.getCurrentCell());
+                                    otherFemale.setNextCell(currentFemale.getCurrentCell());
+                                    otherMale.setNextCell(otherMale.getCurrentCell());
+                                    currentFemale.setSwapping();
+                                    otherFemale.setSwapping();
+                                    swapped = true;
+                                }
+                            }
+                        }
+                    }
+                    if(Constants.CAN_MOVE_TOGETHER_WITH_PARTNER && !swapped && Math.random() < Constants.CHANCE_MOVE_AS_A_PAIR) {
+                        Cell nextCell = decideNextCell(p, neighbors, true);
+                        p.getPartner().setNextCell(nextCell);
+                    }
                 }
             }
         });

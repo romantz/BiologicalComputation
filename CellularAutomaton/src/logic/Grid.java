@@ -25,10 +25,16 @@ public class Grid{
             }
         }
 
+
+
         for (int i = 0; i < Constants.NUMBER_OF_PEOPLE_OF_EACH_GENDER; i++) {
             generatePerson(Sex.FEMALE, randomCoord(), randomCoord(), (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1)));
             generatePerson(Sex.MALE, randomCoord(), randomCoord(), (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1)));
+
         }
+
+        if(Constants.LOG_PRINTS)
+            System.out.println("Finished generating people\n");
     }
 
     public void generatePerson(Sex sex, int x, int y, int number){
@@ -39,8 +45,10 @@ public class Grid{
             cell = cells[y][x];
         }
 
-        System.out.println("Created a " + sex + " at " + cell);
-        Person p = new Person(sex, number, cells[y][x]);
+        if(Constants.LOG_PRINTS)
+            System.out.println("Created a " + sex + " at " + cell + " with number " + number);
+
+        Person p = new Person(sex, number, cell);
         people.add(p);
 
     }
