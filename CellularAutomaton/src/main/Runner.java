@@ -39,8 +39,6 @@ public class Runner {
     public void recalculateLocations() {
         grid.getPeople().forEach(p -> p.move());
 
-        System.out.println("done moving\n");
-
         grid.getPeople().forEach(p -> {
             if(p.isSingle() && p.getNextCell() == null) {
                 LinkedList<Cell> neighbors = p.getNeighborCells();
@@ -62,7 +60,7 @@ public class Runner {
                                 other.setNextCell(other.getCurrentCell());
                                 break;
                             }
-                            else if (other.getMatchValue() < p.getMatchValue(other)) {
+                            else if (Constants.CAN_CHANGE_PARTNER && other.getMatchValue() < p.getMatchValue(other)) {
                                 other.setNextCell(p.getCurrentCell());
                                 p.setNextCell(p.getCurrentCell());
                                 break;
@@ -72,18 +70,25 @@ public class Runner {
                 }
 
                 if (p.getNextCell() == null) {
-                    Collections.shuffle(neighbors);
-                    for(Cell n: neighbors) {
-                        if(p.getSex() == Sex.MALE){
-                            if (n.getNextMaleOccupier() == null)
-                                if(n.getCurrentMaleOccupier() == null || n.getCurrentMaleOccupier().getNextCell() != null)
+                    Cell nextCellByLastDir = grid.getCell(p.getX() + p.getLastXDir(), p.getY() + p.getLastYDir());
+                    if(Math.random() < Constants.CHANCE_TO_KEEP_GOING_IN_THE_SAME_DIRECTION && (p.getLastXDir() != 0 || p.getLastYDir() != 0) && nextCellByLastDir != null && nextCellByLastDir.isEmpty()){
+                        if((p.getSex() == Sex.MALE && nextCellByLastDir.getNextMaleOccupier() == null) ||
+                            (p.getSex() == Sex.FEMALE && nextCellByLastDir.getNextFemaleOccupier() == null))
+                            p.setNextCell(nextCellByLastDir);
+                    }
+                    else {
+                        Collections.shuffle(neighbors);
+                        for (Cell n : neighbors) {
+                            if (p.getSex() == Sex.MALE) {
+                                if (n.getNextMaleOccupier() == null)
+                                    if (n.getCurrentMaleOccupier() == null || n.getCurrentMaleOccupier().getNextCell() != null)
+                                        p.setNextCell(n);
+                                break;
+                            } else if (n.getNextFemaleOccupier() == null)
+                                if (n.getCurrentFemaleOccupier() == null || n.getCurrentFemaleOccupier().getNextCell() != null)
                                     p.setNextCell(n);
                             break;
                         }
-                        else if (n.getNextFemaleOccupier() == null)
-                            if(n.getCurrentFemaleOccupier() == null || n.getCurrentFemaleOccupier().getNextCell() != null)
-                                p.setNextCell(n);
-                        break;
                     }
                     if (p.getNextCell() == null) {
                         p.setNextCell(p.getCurrentCell());
