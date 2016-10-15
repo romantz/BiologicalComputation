@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 /**
  * Created by roman on 10/1/16.
@@ -28,15 +27,28 @@ class Canvas extends JComponent {
                 int x = e.getX() / cellSize;
                 int y = e.getY() / cellSize;
                 Cell cell = grid.getCell(x, y);
-                Person femaleOccupier = cell.getFemaleOccupier();
-                Person maleOccupier = cell.getMaleOccupier();
-                System.out.println("(" + x + ", " + y + ")");
-                if(femaleOccupier != null) {
-                    System.out.println("Female occupier. number: " + femaleOccupier.getNumber() + ", color" + femaleOccupier.getColor());
-                }
 
-                if(maleOccupier != null) {
-                    System.out.println("Male occupier. number: " + maleOccupier.getNumber() + ", color" + maleOccupier.getColor());
+                if (cell != null) {
+                    Person femaleOccupier = cell.getCurrentFemaleOccupier();
+                    Person maleOccupier = cell.getCurrentMaleOccupier();
+                    Person nextFemaleOccupier = cell.getNextFemaleOccupier();
+                    Person nextMaleOccupier = cell.getNextMaleOccupier();
+                    System.out.println("(" + x + ", " + y + ")");
+                    if (femaleOccupier != null) {
+                        System.out.println("Female occupier. number: " + femaleOccupier.getNumber() + ", color" + femaleOccupier.getColor());
+                    }
+
+                    if (maleOccupier != null) {
+                        System.out.println("Male occupier. number: " + maleOccupier.getNumber() + ", color" + maleOccupier.getColor());
+                    }
+
+                    if (nextFemaleOccupier != null) {
+                        System.out.println("Next female occupier. number: " + nextFemaleOccupier.getNumber() + ", color" + nextFemaleOccupier.getColor());
+                    }
+
+                    if (nextMaleOccupier != null) {
+                        System.out.println("Next male occupier. number: " + nextMaleOccupier.getNumber() + ", color" + nextMaleOccupier.getColor());
+                    }
                 }
             }
         });

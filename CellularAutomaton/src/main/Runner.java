@@ -1,10 +1,15 @@
 package main;
 
+import logic.Cell;
 import logic.Grid;
 import logic.Person;
 import utils.Constants;
+import utils.Sex;
 
 import javax.swing.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Created by roman on 10/1/16.
@@ -32,23 +37,60 @@ public class Runner {
     }
 
     public void recalculateLocations() {
-        /*for (Person p: grid.getPeople()) {
-            switch (p.getSex()){
-                case MALE:
-                    grid.getCell(p.getX(), p.getY()).setMaleOccupier(null);
-                    grid.getCell(p.getNextLocation().getX(), p.getNextLocation().getY()).setMaleOccupier(p);
-                    break;
-                case FEMALE:
-                    grid.getCell(p.getX(), p.getY()).setFemaleOccupier(null);
-                    grid.getCell(p.getNextLocation().getX(), p.getNextLocation().getY()).setFemaleOccupier(p);
-                    break;
-            }
+        grid.getPeople().forEach(p -> p.move());
 
-            p.applyMove();
-            if(p.getX() < Constants.GRID_SIZE - 1){
-                p.move(1,0);
+        System.out.println("done moving\n");
+
+        grid.getPeople().forEach(p -> {
+            if(p.isSingle() && p.getNextCell() == null) {
+                LinkedList<Cell> neighbors = p.getNeighborCells();
+                for(Cell n: neighbors){
+                    Person other = null;
+                    switch(p.getSex()){
+                        case MALE:
+                            other = n.getCurrentFemaleOccupier();
+                            break;
+                        case FEMALE:
+                            other = n.getCurrentMaleOccupier();
+                            break;
+                    }
+
+                    if(other != null){
+                        if(other.getNextCell() == null) {
+                            if (other.isSingle()) {
+                                p.setNextCell(other.getCurrentCell());
+                                other.setNextCell(other.getCurrentCell());
+                                break;
+                            }
+                            else if (other.getMatchValue() < p.getMatchValue(other)) {
+                                other.setNextCell(p.getCurrentCell());
+                                p.setNextCell(p.getCurrentCell());
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (p.getNextCell() == null) {
+                    Collections.shuffle(neighbors);
+                    for(Cell n: neighbors) {
+                        if(p.getSex() == Sex.MALE){
+                            if (n.getNextMaleOccupier() == null)
+                                if(n.getCurrentMaleOccupier() == null || n.getCurrentMaleOccupier().getNextCell() != null)
+                                    p.setNextCell(n);
+                            break;
+                        }
+                        else if (n.getNextFemaleOccupier() == null)
+                            if(n.getCurrentFemaleOccupier() == null || n.getCurrentFemaleOccupier().getNextCell() != null)
+                                p.setNextCell(n);
+                        break;
+                    }
+                    if (p.getNextCell() == null) {
+                        p.setNextCell(p.getCurrentCell());
+                    }
+                }
             }
-        }*/
+        });
     }
 
     public Canvas init(Grid grid){

@@ -50,8 +50,6 @@ public class Utils {
                 break;
         }
 
-        System.out.println(red + "," + green + "," + blue + ": " + num +", " + numRange + ", " + insideRange);
-
         return new Color(red, green, blue);
     }
 }

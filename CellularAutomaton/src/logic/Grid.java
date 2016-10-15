@@ -21,30 +21,33 @@ public class Grid{
 
         for (int i = 0; i < size ; i++){
             for (int j = 0; j < size; j++){
-                cells[i][j] = new Cell(j, i);
+                cells[i][j] = new Cell(j, i, this);
             }
         }
 
+//        generatePerson(Sex.FEMALE, 0, 2, 18);
+//        generatePerson(Sex.MALE, 0, 0, 34);
+//        generatePerson(Sex.FEMALE, 1, 2, 1);
+//        generatePerson(Sex.MALE, 1, 1, 10);
+//        generatePerson(Sex.FEMALE, 2, 0, 85);
+//        generatePerson(Sex.MALE, 1, 0, 31);
+
         for (int i = 0; i < Constants.NUMBER_OF_PEOPLE_OF_EACH_GENDER; i++) {
-            generatePerson(Sex.FEMALE);
-            generatePerson(Sex.MALE);
+            generatePerson(Sex.FEMALE, randomCoord(), randomCoord(), (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1)));
+            generatePerson(Sex.MALE, randomCoord(), randomCoord(), (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1)));
         }
     }
 
-    public void generatePerson(Sex sex){
-
-        int x = randomCoord();
-        int y = randomCoord();
-        int number = (int)(Math.random() * (Constants.RANDOM_NUMBER_MAX + 1));
-
+    public void generatePerson(Sex sex, int x, int y, int number){
         while (!cells[y][x].isEmpty()){
             x = randomCoord();
             y = randomCoord();
         }
 
+        System.out.println("Creating a " + sex + " at ("+ x +", "+ y + ") with the number " + number);
         Person p = new Person(sex, number, cells[y][x]);
         people.add(p);
-//        cells[y][x].setOccupier(p);
+
     }
 
     private int randomCoord(){
