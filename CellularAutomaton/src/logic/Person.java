@@ -90,6 +90,8 @@ public class Person {
     public void move(){
         if(nextCell != null) {
 
+            System.out.println("A " + sex + " at " + currentCell + " moved moved to " + nextCell);
+
             lastXDir = nextCell.getX() - currentCell.getX();
             lastYDir = nextCell.getY() - currentCell.getY();
 

@@ -32,11 +32,14 @@ public class Grid{
     }
 
     public void generatePerson(Sex sex, int x, int y, int number){
-        while (!cells[y][x].isEmpty()){
+        Cell cell = cells[y][x];
+        while (!cell.isEmpty()){
             x = randomCoord();
             y = randomCoord();
+            cell = cells[y][x];
         }
 
+        System.out.println("Created a " + sex + " at " + cell);
         Person p = new Person(sex, number, cells[y][x]);
         people.add(p);
 

@@ -77,6 +77,8 @@ public class Cell {
         return currentMaleOccupier == null && currentFemaleOccupier == null;
     }
 
+    public boolean containsPair() { return currentFemaleOccupier != null && currentMaleOccupier != null; }
+
     public LinkedList<Cell> getNeighbors(){
         LinkedList<Cell> neighbors = new LinkedList<Cell>();
         if(x > 0) neighbors.add(grid.getCell(x - 1, y));
